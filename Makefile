@@ -1,6 +1,6 @@
-.PHONY: build build-docker run-docker test format migrate-status
+.PHONY: build docker-build run test format migrate-status
 
-DOCKER_IMAGE ?= air-balloon
+IMAGE_TAG ?= air-balloon
 
 CONTAINER_NAME ?= air-balloon-api
 CONTAINER_NETWORK ?= local_williamdeslocal
@@ -23,9 +23,9 @@ test:
 format:
 	@cargo fmt -- --emit files
 
-build-docker:
-	@docker build -t $(DOCKER_IMAGE) -f docker/Dockerfile ./
+docker-build:
+	@docker build -t $(IMAGE_TAG) -f docker/Dockerfile ./
 
-run-docker:
+run:
 	@docker kill $(CONTAINER_NAME) || echo 'skip kill'
-	@docker run --name $(CONTAINER_NAME) --network $(CONTAINER_NETWORK) -t --rm --env-file ./.env -p $(CONTAINER_BIND_PORT):$(ROCKET_PORT) -e ROCKET_PORT=$(ROCKET_PORT) $(DOCKER_IMAGE)
+	@docker run --name $(CONTAINER_NAME) --network $(CONTAINER_NETWORK) -t --rm --env-file ./.env -p $(CONTAINER_BIND_PORT):$(ROCKET_PORT) -e ROCKET_PORT=$(ROCKET_PORT) $(IMAGE_TAG)
