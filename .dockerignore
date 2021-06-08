@@ -4,3 +4,5 @@
 !/Cargo.toml
 !/diesel.toml
 !/LICENSE
+!/docker/docker-entrypoint.sh
+!/migrations

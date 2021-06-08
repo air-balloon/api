@@ -36,9 +36,21 @@ RUN apk add --no-cache --update mariadb-connector-c-dev musl-dev
 # https://users.rust-lang.org/t/sigsegv-with-program-linked-against-openssl-in-an-alpine-container/52172
 RUN RUSTFLAGS="-C target-feature=-crt-static" cargo build --release --bin air-balloon-api
 
+FROM rustlang/rust:nightly-alpine as diesel-build
+
+COPY --from=cacher $CARGO_HOME $CARGO_HOME
+RUN apk add --no-cache --update mariadb-connector-c-dev musl-dev
+RUN RUSTFLAGS="-C target-feature=-crt-static" cargo install diesel_cli --no-default-features --features mysql
+
 FROM alpine:3.12 as runtime
-WORKDIR /
-COPY --from=builder /workspace/target/release/air-balloon-api /usr/local/bin
 # https://github.com/mischov/meeseeks/issues/98#issuecomment-636615680
 RUN apk add --no-cache --update mariadb-connector-c libgcc
-ENTRYPOINT ["/usr/local/bin/air-balloon-api"]
+
+WORKDIR /app
+COPY /migrations /app/migrations
+COPY /docker/docker-entrypoint.sh /docker-entrypoint.sh
+
+COPY --from=diesel-build /usr/local/cargo/bin/diesel /usr/local/bin
+COPY --from=builder /workspace/target/release/air-balloon-api /usr/local/bin
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
