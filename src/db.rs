@@ -3,8 +3,8 @@ use rocket::request::{self, FromRequest};
 use rocket::{Outcome, Request, State};
 use std::ops::Deref;
 
-use r2d2;
-use r2d2_diesel::ConnectionManager;
+use diesel::r2d2;
+use diesel::r2d2::ConnectionManager;
 
 use diesel::mysql::MysqlConnection;
 

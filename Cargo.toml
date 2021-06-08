@@ -12,12 +12,20 @@ bench = true
 path = "src/main.rs"
 
 [dependencies]
-rocket = "0.4.10"
-diesel = { version = "1.4.4", features = ["mysql"] }
+# ENV
 dotenv = "0.15.0"
-r2d2-diesel = "1.0.0"
-r2d2 = "0.8.9"
+
+# Webserver
+rocket = "0.4.10"
 rocket_contrib = { version = "0.4.0", features = ["json", "diesel_mysql_pool"] }
+
+# Database
+diesel = { version = "1.4.4", features = [
+    "mysql", "chrono", "uuid", "r2d2"
+]}
+diesel-derive-enum = { version = "1.1.1", features = ["mysql"] }
+chrono = "0.4"
+uuid = { version = "0.8.2", features = ["serde", "v4"] }
 
 # Serialization/Deserialization
 serde_json = "1.0.64"
