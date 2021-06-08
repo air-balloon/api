@@ -18,7 +18,7 @@ jobs:
             registry: docker.io
             username: ${{ secrets.DOCKER_REPOSITORY_LOGIN }}
             password: ${{ secrets.DOCKER_REPOSITORY_PASSWORD }}
-        - name: Build action image
+        - name: Build docker image
           run: IMAGE_TAG="docker.io/airballoon/api:edge" make docker-build
 
         - name: Sign and push docker image
