@@ -1,10 +1,13 @@
-name: Push Docker image to Docker hub
+name: Publish Docker image on edge tag
 on:
   push:
 
 jobs:
   push_to_registry:
-    name: Push Docker image to Docker hub
+    name: Publish Docker image on edge tag
+    environment:
+        name: Push Docker image to Docker hub
+        url: https://api.air-balloon.cloud
     runs-on: ubuntu-latest
     steps:
         - name: Check out the repository
