@@ -1,4 +1,4 @@
-# The AirBallon API
+# The AirBalloon API
 
 ## Run it
 
