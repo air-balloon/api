@@ -1,4 +1,4 @@
-name: Publish Docker image on edge tag
+name: Push Docker image to Docker hub
 on:
   push:
 
