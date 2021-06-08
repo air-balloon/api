@@ -1,5 +1,6 @@
 use diesel::{self, prelude::*};
 use rocket_contrib::json::Json;
+use uuid::Uuid;
 
 use crate::db::Connection;
 use crate::models::user::User;
@@ -13,8 +14,12 @@ pub fn index(conn: Connection) -> Result<Json<Vec<UserRessource>>, String> {
     let users_found = users.load::<User>(&*conn).unwrap();
 
     for user in users_found {
+        let _uuid = match Uuid::from_slice(user.uuid.as_slice()) {
+            Ok(_uuid) => _uuid,
+            Err(_err) => Uuid::parse_str("000000000000000000000000000000000000").unwrap(),
+        };
         to_send.push(UserRessource {
-            id: user.id,
+            uuid: _uuid.to_string(),
             username: user.username,
         })
     }
