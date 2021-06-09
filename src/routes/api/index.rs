@@ -1,5 +1,5 @@
 use diesel::{self, prelude::*};
-use rocket_contrib::json::Json;
+use rocket::serde::json::Json;
 use uuid::Uuid;
 
 use crate::db::Connection;
