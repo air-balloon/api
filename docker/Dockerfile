@@ -1,6 +1,6 @@
 # See: https://crates.io/crates/cargo-chef
 
-FROM rustlang/rust:nightly-alpine as planner
+FROM rust:1.52-alpine as planner
 
 ADD \
     Cargo.toml \
@@ -15,7 +15,7 @@ RUN apk add --no-cache --update musl-dev
 RUN cargo install cargo-chef
 RUN cargo chef prepare  --recipe-path recipe.json
 
-FROM rustlang/rust:nightly-alpine as cacher
+FROM rust:1.52-alpine as cacher
 
 WORKDIR /workspace
 
@@ -24,7 +24,7 @@ RUN cargo install cargo-chef
 COPY --from=planner /workspace/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
 
-FROM rustlang/rust:nightly-alpine as builder
+FROM rust:1.52-alpine as builder
 
 COPY . /workspace
 WORKDIR /workspace
@@ -36,7 +36,7 @@ RUN apk add --no-cache --update mariadb-connector-c-dev musl-dev
 # https://users.rust-lang.org/t/sigsegv-with-program-linked-against-openssl-in-an-alpine-container/52172
 RUN RUSTFLAGS="-C target-feature=-crt-static" cargo build --release --bin air-balloon-api
 
-FROM rustlang/rust:nightly-alpine as diesel-build
+FROM rust:1.52-alpine as diesel-build
 
 COPY --from=cacher $CARGO_HOME $CARGO_HOME
 RUN apk add --no-cache --update mariadb-connector-c-dev musl-dev
