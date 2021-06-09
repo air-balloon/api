@@ -9,7 +9,7 @@ table! {
         username -> Varchar,
         first_name -> Varchar,
         last_name -> Varchar,
-        account_status -> Varchar,
+        account_status -> AccountStatusMapping,
         timezone -> Nullable<Varchar>,
         first_log_in_at -> Nullable<Timestamp>,
         last_log_in_at -> Nullable<Timestamp>,
