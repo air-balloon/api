@@ -1,1 +1,2 @@
-ignore = ['src/database']
+# Rust nightly only
+# ignore = ['src/database']
