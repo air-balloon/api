@@ -12,9 +12,9 @@ jobs:
             max-parallel: 4
             matrix:
                 include:
-                    - { platform: "linux/arm64", platform-tag: "arm64" }
+                    #- { platform: "linux/arm64", platform-tag: "arm64" }
                     - { platform: "linux/amd64", platform-tag: "amd64" }
-                    #- { platform: "linux/arm/v7", platform-tag: "armv7" }
+                    - { platform: "linux/arm/v7", platform-tag: "armv7" }
                     #- { platform: "linux/arm/v6", platform-tag: "armv6" }
                     #- { platform: "linux/ppc64le", platform-tag: "ppc64le" }
                     #- { platform: "linux/riscv64", platform-tag: "riscv64" }
@@ -36,14 +36,13 @@ jobs:
               with:
                 path: /tmp/.buildx-cache
                 # Key is named differently to avoid collision
-                key: ${{ runner.os }}-${{ matrix.platform }}-multi-buildx-${{ github.sha }}
+                key: ${{ runner.os }}-${{ matrix.platform-tag }}-multi-buildx-${{ github.sha }}
                 restore-keys: |
-                    ${{ runner.os }}-${{ matrix.platform }}-multi-buildx
+                    ${{ runner.os }}-${{ matrix.platform-tag }}-multi-buildx
 
             - name: Build image
               run: make docker-build
               env:
-                DOCKER_BUILDKIT: 1
                 PLATFORM: "${{ matrix.platform }}"
                 IMAGE_TAG: "docker.io/airballoon/api:${{ matrix.platform-tag }}-edge"
                 # Note the mode=max here
