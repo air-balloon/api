@@ -2,6 +2,12 @@
 
 IMAGE_TAG ?= air-balloon
 
+# All: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
+PLATFORM ?= linux/amd64
+ACTION ?= load
+PROGRESS_MODE ?= plain
+BUILDX_CLI_ARGS ?=
+
 CONTAINER_NAME ?= air-balloon-api
 CONTAINER_NETWORK ?= local_williamdeslocal
 CONTAINER_BIND_PORT ?= 8081
@@ -24,7 +30,17 @@ format:
 	@cargo fmt -- --emit files
 
 docker-build:
-	@docker build -t $(IMAGE_TAG) -f docker/Dockerfile ./
+	# https://github.com/docker/buildx#building
+	docker buildx build \
+		--file ./docker/Dockerfile \
+		--tag $(IMAGE_TAG) \
+		--progress $(PROGRESS_MODE) \
+		--platform $(PLATFORM) \
+		--build-arg VCS_REF=`git rev-parse HEAD` \
+		--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+		--$(ACTION) \
+		$(BUILDX_CLI_ARGS) \
+		./
 
 run:
 	@docker kill $(CONTAINER_NAME) || echo 'skip kill'
